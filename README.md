@@ -174,10 +174,9 @@ Plugins are simply just functions which are passed the client object and execute
 
 ### Example
 
-An example function to add a `.isError()` method to the `Response` object.
+Here's an example plugin that adds an `.isError()` method to the `Response` object.
 
-    function(client) {
-
+    function plugin(client) {
 		client.on('after', function (request, response) {
 
 			response.isError = function() {
@@ -185,12 +184,10 @@ An example function to add a `.isError()` method to the `Response` object.
 			};
 			
 		});
-
 	}
 
 ## ToDo
 
-- Posting data
 - Tests
 - Plugins:
     - OAuth v1

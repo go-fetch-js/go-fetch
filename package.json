@@ -2,8 +2,15 @@
   "name": "go-fetch",
   "description": "A pluggable HTTP client.",
   "keywords": ["http", "request", "fetch", "get", "post"],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/Client.js",
+  "repository": {
+    "type": "git",
+    "url":  "git@github.com:go-fetch-js/go-fetch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/go-fetch-js/go-fetch/issues"
+  },
   "dependencies": {
     "emitter-on-steroids": "^2.0.1",
     "no-frills-request": "^0.1.3",
