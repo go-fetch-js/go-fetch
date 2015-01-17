@@ -2,6 +2,8 @@
 
 A pluggable HTTP client.
 
+[![Circle CI](https://circleci.com/gh/go-fetch-js/go-fetch.svg?style=svg)](https://circleci.com/gh/go-fetch-js/go-fetch)
+
 ## Features
 
 - Support for HTTP and HTTPS
