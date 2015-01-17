@@ -60,9 +60,12 @@ A HTTP client.
 
 #### Methods
 
-##### new Client() / Client()
+##### new Client(options) / Client(options)
 
 Create a new client
+
+- https_protocol
+- https_ignore_errors
 
 ##### .use(plugin) : Client
 
