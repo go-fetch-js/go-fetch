@@ -1,0 +1,13 @@
+{
+  "name": "go-fetch",
+  "description": "A pluggable HTTP client.",
+  "keywords": ["http", "request", "fetch", "get", "post"],
+  "version": "0.0.1",
+  "main": "lib/Client.js",
+  "dependencies": {
+    "emitter-on-steroids": "^2.0.1",
+    "no-frills-request": "^0.1.3",
+    "parse-http-header": "0.0.1"
+  },
+  "license": "MIT"
+}
