@@ -191,28 +191,30 @@ Here's an example plugin that adds an `.isError()` method to the `Response` obje
 		});
 	}
 	
-### plugins.prefixUrl(url)
+### .prefixUrl(url)
 
 Prefix each request URL with another URL unless the request URL already starts with a prefix of "http(s)://"
 
-### plugins.contentType
+### .contentType
 
 Parse the `Content-Type` header and add `.contentType` and `.charset` properties to the request object
 
-### plugins.body(options)
+### .body(options)
 
 Concatenate the response stream and add it on a `.body` property on the response object
 
 - options.types - if an allowed list of types is specified, then only concatenate responses where the mime type is in the allowed list of types
 
+### .OAuth1(options
+[Here](https://www.npmjs.com/package/go-fetch-oauth1).
+
 ## ToDo
 
 - Tests
 - Plugins:
-    - OAuth v1
-    - OAuth v2
     - Compression (gzip/deflate)
     - Cookie Jar
+    - OAuth v2
 - Support for XMLHttpRequest in the browser
 
 ## License
