@@ -80,11 +80,12 @@ describe('Client', function() {
 
 		describe('Callback-style', function(done) {
 
-			it('should return a `Client`', function() {
+			it('should return a `Client`', function(done) {
 
 				var client = Client().get('http://localhost/', function(err, res) {
-					done()
-				});
+						done();
+					})
+				;
 
 				assert(client instanceof Client);
 
