@@ -175,7 +175,7 @@ End the response.
 
 ## Plugins
 
-Plugins are simply just functions which are passed the client object and executed when they are `.use()`d. Using the `before` and `after` events, plugins can add helper methods to the `Request` and `Response` objects, modify the request data sent to the server, and process the response data received from the server.
+Plugins are functions that are passed the client object do something with it. Plugins are executed when `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server and process the response data received from the server.
 
 ### Example
 
@@ -190,6 +190,20 @@ Here's an example plugin that adds an `.isError()` method to the `Response` obje
 			
 		});
 	}
+	
+### plugins.prefixUrl(url)
+
+Prefix each request URL with another URL unless the request URL already starts with a prefix of "http(s)://"
+
+### plugins.contentType
+
+Parse the `Content-Type` header and add `.contentType` and `.charset` properties to the request object
+
+### plugins.body(options)
+
+Concatenate the response stream and add it on a `.body` property on the response object
+
+- options.types - if an allowed list of types is specified, then only concatenate responses where the mime type is in the allowed list of types
 
 ## ToDo
 

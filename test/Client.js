@@ -1,6 +1,8 @@
 var assert = require('assert');
 var server = require('simple-server-setup');
 var Client = require('..');
+var Request = require('../lib/Request');
+var Response = require('../lib/Response');
 
 var HTTPS_SERVER_OPTIONS = {
 	secure: true,
@@ -13,6 +15,20 @@ var HTTPS_CLIENT_OPTIONS = {
 };
 
 describe('Client', function() {
+
+	describe('constructor', function() {
+
+		it('should create a new instance with the new keyword', function() {
+			var client = new Client();
+			assert(client instanceof Client);
+		});
+
+		it('should create a new instance with a function', function() {
+			var client = Client();
+			assert(client instanceof Client);
+		});
+
+	});
 
 	describe('.send()', function() {
 
@@ -55,15 +71,24 @@ describe('Client', function() {
 		it('should emit `headers`');
 		it('should emit `error`');
 
-		it('should still have events registered on the `Response`');
+		it('should still have events registered on the `Response` before it is injected');
+		it('should still call methods on the `Response` before it is injected');
 
 	});
 
 	describe('.request()', function() {
 
-		describe('Callback-style', function() {
+		describe('Callback-style', function(done) {
 
-			it('should return a `Response`');
+			it('should return a `Client`', function() {
+
+				var client = Client().get('http://localhost/', function(err, res) {
+					done()
+				});
+
+				assert(client instanceof Client);
+
+			});
 
 			it('should handle different length arguments');
 			it('should handle different length arguments');
@@ -77,8 +102,15 @@ describe('Client', function() {
 
 		describe('OOP-style', function() {
 
-			it('should return a `Request`');
-			it('should add a `.send()` method to the request');
+			it('should return a `Request`', function() {
+				var request = Client().get('http://localhost/');
+				assert(request instanceof Request);
+			});
+
+			it('should add a `.send()` method to the request', function() {
+				var request = Client().get('http://localhost/');
+				assert(typeof(request.send), 'function');
+			});
 
 		});
 
