@@ -3,6 +3,8 @@
   "description": "A pluggable HTTP client.",
   "keywords": [
     "http",
+    "https",
+    "client",
     "request",
     "fetch",
     "get",
