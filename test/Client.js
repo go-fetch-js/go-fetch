@@ -106,6 +106,8 @@ describe('Client', function() {
 
 			it('should call the callback with the global context');
 
+			it('should pass an error if it cannot connect to the server');
+
 		});
 
 		describe('OOP-style', function() {
