@@ -22,7 +22,7 @@ describe('Plugins', function() {
 			client.emit('before', request, response);
 
 			//check the result
-			assert.equal(request.url(), 'http://www.digitaledgeit.com.au/favicon.ico');
+			assert.equal(request.getUrl().toString(), 'http://www.digitaledgeit.com.au/favicon.ico');
 
 		});
 
@@ -40,7 +40,7 @@ describe('Plugins', function() {
 			client.emit('before', request, response);
 
 			//check the result
-			assert.equal(request.url(), 'https://www.digitaledgeit.com.au/favicon.ico');
+			assert.equal(request.getUrl().toString(), 'https://www.digitaledgeit.com.au/favicon.ico');
 
 		});
 
@@ -58,9 +58,32 @@ describe('Plugins', function() {
 			client.emit('before', request, response);
 
 			//check the result
-			assert.equal(request.url(), 'https://api.github.com/users/digitaledgeit/repos');
+			assert.equal(request.getUrl().toString(), 'https://api.github.com/users/digitaledgeit/repos');
 
 		});
+
+	});
+
+	describe('contentType', function() {
+
+		it('should add methods to the request and response objects', function() {
+
+			var client    = new Client();
+			var plugin    = plugins.contentType;
+			var request   = new Request('GET', 'users/digitaledgeit/repos', {'Content-Type': 'application/json'});
+			var response  = new Response();
+
+			//init the plugin
+			plugin(client);
+
+			//run the plugin
+			client.emit('before', request, response);
+
+			//check the result
+			assert.equal(request.getContentType(), 'application/json');
+
+		});
+
 
 	});
 

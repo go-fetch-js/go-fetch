@@ -19,18 +19,17 @@ Callback style:
     var Client = require('go-fetch');
     
     Client()
-        .use(Client.plugins.body())
-        .get('http://httpbin.org/html', function(error, response) {
-        
-            console.log(
-                'Error: '+(error ? error : 'no error')+'\n'+
-                'Status: '+response.status()+'\n'+
-                'Headers: '+JSON.stringify(response.headers()).substr(0, 100)+'...'+'\n'+
-                (response.body ? response.body.substr(0, 100)+'...' : '')
-            );
-            
-            response.end();
-        })
+    	.use(Client.plugins.body())
+    	.get('http://httpbin.org/html', function(error, response) {
+    
+    		console.log(
+    			'Error: '+(error ? error : 'no error')+'\n'+
+    			'Status: '+response.getStatus()+'\n'+
+    			'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
+    			(response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
+    		);
+    
+    	})
     ;
     
 ### POST
@@ -45,14 +44,14 @@ Callback style:
     
             console.log(
                 'Error: '+(error ? error : 'no error')+'\n'+
-                'Status: '+response.status()+'\n'+
-                'Headers: '+JSON.stringify(response.headers()).substr(0, 100)+'...'+'\n'+
-                (response.body ? response.body.substr(0, 100)+'...' : '')
+                'Status: '+response.getStatus()+'\n'+
+                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
+                (response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
             );
-    
-            response.end();
+            
         })
     ;
+
 
 ## API
 
@@ -135,19 +134,21 @@ A HTTP request.
 
 Create a new request.
 
-##### .url() : String
+##### .setUrl(url) : String
 
-Get the URL.
+Set the URL.
 
-##### .headers() : Object
+##### .setHeaders(headers : Object)
 
-##### .header() : String
+Set all the headers.
 
-##### .header(name, value) : Request
+##### .setHeader(name : string, value : string)
 
-##### .body() : String
+Set a header value.
 
-##### .body(data) : Request
+##### .setBody(data : string|Buffer|Stream)
+
+Set the body data.
 
 ### Response
 
@@ -155,21 +156,25 @@ A HTTP response.
 
 #### Methods
 
-##### .status() : Number
+##### .getStatus() : number
 
 Get the status code.
 
-##### .headers() : Object
+##### .getHeaders() : Object
 
 Get all the headers.
 
-##### .header(name) : String
+##### .getHeader(name : string) : string
 
 Get a header value.
 
-##### .end() : Response
+##### .getBody() : string|Buffer|Stream
 
-End the response.
+Get the body data.
+
+##### .abort() : Response
+
+Abort the response.
 
 #### Events
 
@@ -185,7 +190,7 @@ Here's an example plugin that adds an `.isError()` method to the `Response` obje
 		client.on('after', function (request, response) {
 
 			response.isError = function() {
-			    return response.status() >= 400 && response.status() < 600;
+			    return response.getStatus() >= 400 && response.getStatus() < 600;
 			};
 			
 		});
@@ -201,7 +206,7 @@ Parse the `Content-Type` header and add `.contentType` and `.charset` properties
 
 ### .body(options)
 
-Concatenate the response stream and add it on a `.body` property on the response object
+Concatenate the response stream and set it on the `.getBody()` property on the response object
 
 - options.types - if an allowed list of types is specified, then only concatenate responses where the mime type is in the allowed list of types
 

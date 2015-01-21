@@ -10,7 +10,7 @@
     "get",
     "post"
   ],
-  "version": "0.2.4",
+  "version": "1.0.0",
   "main": "lib/Client.js",
   "repository": {
     "type": "git",
@@ -20,12 +20,12 @@
     "url": "https://github.com/go-fetch-js/go-fetch/issues"
   },
   "dependencies": {
-    "emitter-on-steroids": "^2.0.1",
-    "no-frills-request": "^1.0.0",
-    "parse-http-header": "0.0.1"
+    "emitter-on-steroids": "^2.0.3",
+    "no-frills-request": "^1.1.0",
+    "parse-http-header": "git+ssh://git@github.com:jameslnewell/node-parse-http-header.git"
   },
   "devDependencies": {
-    "simple-server-setup": "0.0.1"
+    "simple-server-setup": "^0.1.0"
   },
   "scripts": {
     "test": "mocha"

@@ -37,14 +37,17 @@ describe('Client', function() {
 			var srv = server.create(function(app) {
 				app.get('/', function(req, res) {
 					res.send('HTTP');
-					srv.close();
 				});
 			});
 
-			Client().get(srv.url, function(error, response) {
-				assert.equal(response.status(), 200);
-				assert.equal(error, undefined);
-				done();
+			srv.on('configured', function() {
+
+				Client(HTTPS_CLIENT_OPTIONS).get(srv.url, function(error, response) {
+					assert.equal(response.getStatus(), 200);
+					assert.equal(error, undefined);
+					srv.close(done);
+				});
+
 			});
 
 		});
@@ -54,21 +57,25 @@ describe('Client', function() {
 			var srv = server.create(HTTPS_SERVER_OPTIONS, function(app) {
 				app.get('/', function(req, res) {
 					res.send('HTTPS');
-					srv.close();
 				});
 			});
 
-			Client(HTTPS_CLIENT_OPTIONS).get(srv.url, function(error, response) {
-				assert.equal(response.status(), 200);
-				assert.equal(error, undefined);
-				done();
+			srv.on('configured', function() {
+
+				Client(HTTPS_CLIENT_OPTIONS).get(srv.url, function(error, response) {
+					assert.equal(response.getStatus(), 200);
+					assert.equal(error, undefined);
+					srv.close(done);
+				});
+
 			});
 
 		});
 
 		it('should emit `before`');
 		it('should emit `after`');
-		it('should emit `headers`');
+		it('should emit `sent`');
+		it('should emit `received`');
 		it('should emit `error`');
 
 		it('should still have events registered on the `Response` before it is injected');
