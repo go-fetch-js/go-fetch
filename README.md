@@ -1,8 +1,8 @@
 # go-fetch
 
-A pluggable HTTP client.
-
 [![Circle CI](https://circleci.com/gh/go-fetch-js/go-fetch.svg?style=svg)](https://circleci.com/gh/go-fetch-js/go-fetch)
+
+A pluggable HTTP client.
 
 ## Features
 
