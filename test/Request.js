@@ -3,6 +3,15 @@ var Request = require('../lib/Request');
 
 describe('Request', function() {
 
+	describe('.getUrl()', function() {
+
+		it('should return the same URL if I do not set a new URL', function() {
+			var request = new Request();
+			assert.strictEqual(request.getUrl(), request.getUrl());
+		});
+
+	});
+
 	describe('.toString()', function() {
 
 		it('should create a POST request', function() {

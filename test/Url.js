@@ -39,7 +39,7 @@ describe('Url', function() {
 
 	});
 
-	describe('.getQuery()', function() {
+	describe('.setQuery()', function() {
 
 		it('should replace the dictionary when I don\'t pass a parameter name', function() {
 			var url = new Url('http://localhost/?letters=abc');
