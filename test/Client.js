@@ -78,6 +78,61 @@ describe('Client', function() {
 		it('should emit `received`');
 		it('should emit `error`');
 
+		it('should emit `error` if a plugin fails `before`', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('');
+				});
+			});
+
+			srv.on('configured', function() {
+
+				Client()
+					.use(function(client) {
+						client.on('before', function(request, response, next) {
+							next(new Error('Plugin error'));
+						});
+					})
+					.get(srv.url)
+						.on('error', function(err) {
+							assert.equal(err.message, 'Plugin error');
+							srv.close(done);
+						})
+						.send()
+				;
+
+			});
+		});
+
+		it('should emit `error` if a plugin fails `after`', function(done) {
+
+			var srv = server.create(function (app) {
+				app.get('/', function (req, res) {
+					res.send('');
+				});
+			});
+
+			srv.on('configured', function () {
+
+				Client()
+					.use(function (client) {
+						client.on('after', function (request, response, next) {
+							next(new Error('Plugin error'));
+						});
+					})
+					.get(srv.url)
+						.send()
+						.on('error', function (err) {
+							assert.equal(err.message, 'Plugin error');
+							srv.close(done);
+						})
+				;
+
+			});
+
+		});
+
 		it('should still have events registered on the `Response` before it is injected');
 		it('should still call methods on the `Response` before it is injected');
 
