@@ -90,6 +90,14 @@ Plugins are passed the client object.
 
 ##### .delete(url, headers, data, callback) : Client
 
+##### .send(request) : Response
+
+Send a request.
+
+##### .send(request, callback) : Client
+
+Send a request and handle the response.
+
 ##### .on(event, callback) : Client
 
 Add an event listener.
