@@ -10,7 +10,7 @@
     "get",
     "post"
   ],
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "lib/Client.js",
   "repository": {
     "type": "git",
