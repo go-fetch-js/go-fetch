@@ -277,7 +277,7 @@ Prefix each request URL with another URL.
 
 Parse the Content-Type header.
 
-### [body-parser](https://www.npmjs.com/package/go-fetch-body-parser)
+### [parse-body](https://www.npmjs.com/package/go-fetch-parse-body)
 
 Concatenate and parse the response stream.
 
@@ -293,9 +293,13 @@ OAuth v1 authentication.
 
 Automatically follow redirects.
 
-### [compression](https://www.npmjs.com/package/go-fetch-follow-compression)
+### [decompress](https://www.npmjs.com/package/go-fetch-decompress)
 
-Decompress compressed responses from the server.
+Decompress response bodies compressed with gzip.
+
+### [useragent](https://www.npmjs.com/package/go-fetch-useragent)
+
+Add a User-Agent header to every request.
 
 ## ToDo
 
