@@ -200,6 +200,11 @@ Set a header value.
 
 Set the body data.
 
+#### Events
+
+##### sent
+##### error
+
 ### Response
 
 A HTTP response.
@@ -227,6 +232,9 @@ Get the body data.
 Abort the response.
 
 #### Events
+
+##### received
+##### error
 
 ## Plugins
 
