@@ -8,7 +8,12 @@ A pluggable HTTP client.
 
 - Support for HTTP and HTTPS
 - Support for streaming
-- Pluggable API
+- Pluggable API with plugins for:
+    - following redirects
+    - compression
+    - parsing JSON
+    - authentication
+    - ... and more
 
 ## Usage
     
@@ -16,31 +21,12 @@ A pluggable HTTP client.
     
 Callback style:
     
-    var Client = require('go-fetch');
+    var Client  = require('go-fetch');
+    var body    = require('go-fetch-body-parser');
     
     Client()
-    	.use(Client.plugins.body())
-    	.get('http://httpbin.org/html', function(error, response) {
-    
-    		console.log(
-    			'Error: '+(error ? error : 'no error')+'\n'+
-    			'Status: '+response.getStatus()+'\n'+
-    			'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
-    			(response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
-    		);
-    
-    	})
-    ;
-    
-### POST
-
-Callback style:
-
-    var Client = require('go-fetch');
-    
-    Client()
-        .use(Client.plugins.body())
-        .post('http://httpbin.org/post', {'Content-Type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}), function(error, response) {
+        .use(body())
+        .get('http://httpbin.org/html', function(error, response) {
     
             console.log(
                 'Error: '+(error ? error : 'no error')+'\n'+
@@ -48,10 +34,52 @@ Callback style:
                 'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
                 (response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
             );
-            
+    
         })
     ;
+    
+### POST
 
+Callback style:
+    
+    var Client      = require('go-fetch');
+    var body        = require('go-fetch-body-parser');
+    var contentType = require('go-fetch-content-type');
+    
+    Client()
+        .use(contentType)
+        .use(body.json())
+        .post('http://httpbin.org/post', {'Content-Type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}), function(error, response) {
+    
+            console.log(
+                'Error: '+(error ? error : 'no error')+'\n'+
+                'Status: '+response.getStatus()+'\n'+
+                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n',
+                response.getBody()
+            );
+    
+        })
+    ;
+    
+Post a stream:
+    
+    var fs          = require('fs');
+    var Client      = require('go-fetch');
+    var body        = require('go-fetch-body-parser');
+    
+    Client()
+        .use(body())
+        .post('http://httpbin.org/post', {'Content-Type': 'text/x-markdown'}, fs.createReadStream(__dirname+'/../README.md'), function(error, response) {
+    
+            console.log(
+                'Error: '+(error ? error : 'no error')+'\n'+
+                'Status: '+response.getStatus()+'\n'+
+                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n',
+                response.getBody()
+            );
+    
+        })
+    ;
 
 ## API
 
@@ -112,8 +140,15 @@ Remove an event listener.
 
 Emitted before the request is sent to the server with the following arguments:
 
-- request : Request
-- response : Response
+- event : Client.Event
+    - .getName() : string
+    - .getEmitter() : Client
+    - .isDefaultPrevented() : bool
+    - .preventDefault()
+    - .isPropagationStopped() : bool
+    - .stopPropagation()
+    - .request : Client.Request
+    - .response : Client.Response
 
 Useful for plugins setting data on the request e.g. OAuth signature
     
@@ -121,8 +156,15 @@ Useful for plugins setting data on the request e.g. OAuth signature
 
 Emitted after the request is sent to the server with the following arguments:
 
-- request : Request
-- response : Response
+
+- event : Client.Event
+    - .getName() : string
+    - .getEmitter() : Client
+    - .isPropagationStopped() : bool
+    - .stopPropagation()
+    - .request : Client.Request
+    - .response : Client.Response
+
 
 Useful for plugins processing and setting data on the response e.g. gzip/deflate
 
@@ -188,46 +230,81 @@ Abort the response.
 
 ## Plugins
 
-Plugins are functions that are passed the client object do something with it. Plugins are executed when `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server and process the response data received from the server.
+Plugins are functions that are passed the client object to do something with it. Plugins are executed when they are `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server, process the response data received from the server, or cancel the request and use a locally built response.
 
 ### Example
 
 Here's an example plugin that adds an `.isError()` method to the `Response` object.
 
     function plugin(client) {
-		client.on('after', function (request, response) {
-
-			response.isError = function() {
-			    return response.getStatus() >= 400 && response.getStatus() < 600;
+		client.on('after', function (event) {
+                        
+			event.response.isError = function() {
+			    return this.getStatus() >= 400 && this.getStatus() < 600;
 			};
 			
 		});
 	}
 	
-### .prefixUrl(url)
+Here's an example plugin that returns a mocked request instead of a real one.
 
-Prefix each request URL with another URL unless the request URL already starts with a prefix of "http(s)://"
+    function(client) {
+        client.on('before', function(event) {
+            event.preventDefault();
+            event.response
+                .setStatus(201)
+                .setHeader('Content-Type', 'application/json; charset=utf-8')
+                .setBody(JSON.stringify({
+                    message: 'Hello World!'
+                }))
+            ;
+        });
+    }
+	
+### [prefix-url](https://www.npmjs.com/package/go-fetch-prefix-url)
 
-### .contentType
+Prefix each request URL with another URL.
 
-Parse the `Content-Type` header and add `.contentType` and `.charset` properties to the request object
+### [content-type](https://www.npmjs.com/package/go-fetch-content-type)
 
-### [bodyParser](https://www.npmjs.com/package/go-fetch-body-parser)
+Parse the Content-Type header.
 
-Concatenate the response stream into a string and update the response body.
+### [body-parser](https://www.npmjs.com/package/go-fetch-body-parser)
 
-### [OAuth1](https://www.npmjs.com/package/go-fetch-oauth1)
+Concatenate and parse the response stream.
+
+### [auth](https://www.npmjs.com/package/go-fetch-auth)
+
+Basic HTTP auth.
+
+### [oauth1](https://www.npmjs.com/package/go-fetch-oauth1)
 
 OAuth v1 authentication.
+
+### [follow-redirects](https://www.npmjs.com/package/go-fetch-follow-redirects)
+
+Automatically follow redirects.
+
+### [compression](https://www.npmjs.com/package/go-fetch-follow-compression)
+
+Decompress compressed responses from the server.
 
 ## ToDo
 
 - Tests
 - Plugins:
-    - Compression (gzip/deflate)
     - Cookie Jar
     - OAuth v2
 - Support for XMLHttpRequest in the browser
+
+## Changelog
+
+### v2.0.0
+
+ - moved `prefixUrl`, `contentType` and `body` plugins into their own repositories
+ - changed the arguments passed to the `before` and `after` event handlers - handlers now receive a formal event object that allows propagation to be stopped and the request to be prevented
+ - adding some tests
+ - cleaning up documentation
 
 ## License
 

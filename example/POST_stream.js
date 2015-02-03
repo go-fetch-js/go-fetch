@@ -1,11 +1,10 @@
+var fs          = require('fs');
 var Client      = require('..');
 var body        = require('go-fetch-body-parser');
-var contentType = require('go-fetch-content-type');
 
 Client()
-	.use(contentType)
-	.use(body.json())
-	.post('http://httpbin.org/post', {'Content-Type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}), function(error, response) {
+	.use(body())
+	.post('http://httpbin.org/post', {'Content-Type': 'text/x-markdown'}, fs.createReadStream(__dirname+'/../README.md'), function(error, response) {
 
 		console.log(
 			'Error: '+(error ? error : 'no error')+'\n'+

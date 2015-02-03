@@ -72,11 +72,161 @@ describe('Client', function() {
 
 		});
 
-		it('should emit `before`');
-		it('should emit `after`');
-		it('should emit `sent`');
-		it('should emit `received`');
-		it('should emit `error`');
+		it('should emit `before`', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var event;
+
+				Client()
+					.on('before', function(e) {event=e.getName();})
+					.get(srv.url, function(error, response) {
+						assert.equal(event, 'before');
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('`before` event should be stoppable', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var p1, p2;
+
+				Client()
+					.on('before', function(e) {p1=true;e.stopPropagation();})
+					.on('before', function(e) {p2=true;})
+					.get(srv.url, function(error, response) {
+						assert(p1);
+						assert(!p2);
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('`before` event should be preventable');
+		it('should emit `after`', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var event;
+
+				Client()
+					.on('after', function(e) {event=e.getName();})
+					.get(srv.url, function(error, response) {
+						assert.equal(event, 'after');
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('`after` event should be stoppable', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var p1, p2;
+
+				Client()
+					.on('after', function(e) {p1=true;e.stopPropagation();})
+					.on('after', function(e) {p2=true;})
+					.get(srv.url, function(error, response) {
+						assert(p1);
+						assert(!p2);
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('should emit `sent`', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var called;
+
+				Client()
+					.on('sent', function() {called=true})
+					.get(srv.url, function(error, response) {
+						assert(called);
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('should emit `received`', function(done) {
+
+			var srv = server.create(function(app) {
+				app.get('/', function(req, res) {
+					res.send('SERVER');
+				});
+			});
+
+			srv.on('configured', function() {
+				var called;
+
+				Client()
+					.on('received', function() {called=true})
+					.get(srv.url, function(error, response) {
+						assert(called);
+						srv.close(done);
+					})
+				;
+
+			});
+
+		});
+
+		it('should emit `error`', function(done) {
+			var called;
+
+			Client()
+				.on('error', function() {called=true})
+				.get('http://does.not.exist', function(error, response) {
+					assert(called);
+					done();
+				})
+			;
+
+		});
 
 		it('should emit `error` if a plugin fails `before`', function(done) {
 
@@ -90,7 +240,7 @@ describe('Client', function() {
 
 				Client()
 					.use(function(client) {
-						client.on('before', function(request, response, next) {
+						client.on('before', function(event, next) {
 							next(new Error('Plugin error'));
 						});
 					})
@@ -117,7 +267,7 @@ describe('Client', function() {
 
 				Client()
 					.use(function (client) {
-						client.on('after', function (request, response, next) {
+						client.on('after', function (event, next) {
 							next(new Error('Plugin error'));
 						});
 					})
