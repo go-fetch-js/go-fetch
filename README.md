@@ -212,14 +212,13 @@ Prefix each request URL with another URL unless the request URL already starts w
 
 Parse the `Content-Type` header and add `.contentType` and `.charset` properties to the request object
 
-### .body(options)
+### [bodyParser](https://www.npmjs.com/package/go-fetch-body-parser)
 
-Concatenate the response stream and set it on the `.getBody()` property on the response object
+Concatenate the response stream into a string and update the response body.
 
-- options.types - if an allowed list of types is specified, then only concatenate responses where the mime type is in the allowed list of types
+### [OAuth1](https://www.npmjs.com/package/go-fetch-oauth1)
 
-### .OAuth1(options
-[Here](https://www.npmjs.com/package/go-fetch-oauth1).
+OAuth v1 authentication.
 
 ## ToDo
 
