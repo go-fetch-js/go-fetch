@@ -6,11 +6,12 @@
     "https",
     "client",
     "request",
+    "plugin",
     "fetch",
     "get",
     "post"
   ],
-  "version": "2.0.2",
+  "version": "2.0.3",
   "main": "lib/Client.js",
   "repository": {
     "type": "git",
@@ -20,12 +21,12 @@
     "url": "https://github.com/go-fetch-js/go-fetch/issues"
   },
   "dependencies": {
-    "emitter-on-steroids": "^2.0.3",
+    "emitter-on-steroids": "^2.0.4",
     "no-frills-request": "^1.1.0"
   },
   "devDependencies": {
     "go-fetch-content-type": "^0.1.0",
-    "go-fetch-body-parser": "^2.0.0",
+    "go-fetch-parse-body": "^2.0.0",
     "simple-server-setup": "^0.1.0"
   },
   "scripts": {
