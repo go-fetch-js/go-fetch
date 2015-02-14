@@ -4,6 +4,8 @@
 
 A pluggable HTTP client.
 
+Go-fetch is a HTTP client for Node.js. It has a simple API but supports a lot of features via plugins.
+
 ## Features
 
 - Support for HTTP and HTTPS
@@ -36,6 +38,27 @@ Callback style:
             );
     
         })
+    ;
+        
+OOP style:
+    
+    var Client = require('go-fetch');
+    var parseBody = require('go-fetch-parse-body');
+    
+    Client()
+        .use(parseBody())
+        .get('http://httpbin.org/html')
+            .setHeader('User-Agent', 'go-fetch')
+            .send(function(error, response) {
+        
+                console.log(
+                    'Error: '+(error ? error : 'no error')+'\n'+
+                    'Status: '+response.getStatus()+'\n'+
+                    'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
+                    (response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
+                );
+        
+            })
     ;
     
 ### POST
@@ -238,7 +261,7 @@ Abort the response.
 
 ## Plugins
 
-Plugins are functions that are passed the client object to do something with it. Plugins are executed when they are `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server, process the response data received from the server, or cancel the request and use a locally built response.
+Plugins are functions that are passed the client object to do something with it. Plugins are executed when they are `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server, process the response data received from the server, or cancel the request and use a locally constructed response instead.
 
 ### Example
 
