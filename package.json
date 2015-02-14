@@ -4,12 +4,13 @@
   "keywords": [
     "http",
     "https",
-    "client",
     "request",
-    "plugin",
+    "response",
+    "client",
     "fetch",
     "get",
-    "post"
+    "post",
+    "plugin"
   ],
   "version": "2.0.3",
   "main": "lib/Client.js",
