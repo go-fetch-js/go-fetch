@@ -43,6 +43,7 @@ describe('Client', function() {
 			srv.on('configured', function() {
 
 				Client(HTTPS_CLIENT_OPTIONS).get(srv.url, function(error, response) {
+					assert(!error);
 					assert.equal(response.getStatus(), 200);
 					assert.equal(error, undefined);
 					srv.close(done);
