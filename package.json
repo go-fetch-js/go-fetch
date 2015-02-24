@@ -12,7 +12,7 @@
     "post",
     "plugin"
   ],
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": "lib/Client.js",
   "repository": {
     "type": "git",
