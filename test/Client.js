@@ -287,6 +287,32 @@ describe('Client', function() {
 		it('should still have events registered on the `Response` before it is injected');
 		it('should still call methods on the `Response` before it is injected');
 
+    it('should timeout after 1s', function(done) {
+
+      var srv = server.create(function (app) {
+        app.get('/', function (req, res) {
+          //res.send('');
+        });
+      });
+
+      srv.on('configured', function() {
+
+        Client({timeout: 1000})
+          .use(function(client) {
+            client.on('after', function(event, next) {
+              next(new Error('Plugin error'));
+            });
+          })
+          .get(srv.url, function(err) {
+            assert.equal(err.code, 'ECONNRESET');
+            srv.close(done);
+          })
+        ;
+
+      });
+
+    });
+
 	});
 
 	describe('.request()', function() {
