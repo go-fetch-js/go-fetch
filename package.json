@@ -12,7 +12,7 @@
     "post",
     "plugin"
   ],
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "lib/Client.js",
   "repository": {
     "type": "git",
@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "emitter-on-steroids": "^2.0.4",
-    "no-frills-request": "^1.1.0"
+    "no-frills-request": "^1.1.0",
+    "qs": "^5.2.0"
   },
   "devDependencies": {
     "go-fetch-content-type": "^0.1.0",

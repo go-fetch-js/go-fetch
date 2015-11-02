@@ -68,6 +68,31 @@ describe('Url', function() {
 
 		});
 
-	});
+    it('should convert an object to a query string', function() {
+
+      var url = new Url('https://api.planningcenteronline.com/people/v2/');
+      url.setQuery({'where[first_name]': 'John'})
+
+      assert.equal(
+        'https://api.planningcenteronline.com/people/v2/?where%5Bfirst_name%5D=John',
+        url.toString()
+      );
+
+    });
+
+    it('should convert a nested object to a query string', function() {
+
+      var url = new Url('https://api.planningcenteronline.com/people/v2/');
+      url.setQuery({where: {first_name: 'John'}})
+
+      assert.equal(
+        'https://api.planningcenteronline.com/people/v2/?where%5Bfirst_name%5D=John',
+        url.toString()
+      );
+
+    });
+
+
+  });
 
 });
