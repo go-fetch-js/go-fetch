@@ -1,7 +1,8 @@
 var Client  = require('..');
 var body    = require('go-fetch-body-parser');
 
-Client()
+const client = new Client();
+client
 	.use(body())
 	.get('http://httpbin.org/html', function(error, response) {
 
