@@ -1,17 +1,12 @@
-var Client  = require('..');
-var body    = require('go-fetch-body-parser');
+'use-strict';
 
-const client = new Client();
-client
-	.use(body())
-	.get('http://httpbin.org/html', function(error, response) {
+const Client = require('..');
 
-		console.log(
-			'Error: '+(error ? error : 'no error')+'\n'+
-			'Status: '+response.getStatus()+'\n'+
-			'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
-			(response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
-		);
-
-	})
+new Client()
+  .get('http://httpbin.org/get')
+    .then(res => {
+      console.log(res.toString());
+      return res.body.json().then(json => console.log(json));
+    })
+    .catch(err => console.error(err))
 ;

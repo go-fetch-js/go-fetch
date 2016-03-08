@@ -1,18 +1,12 @@
-var Client      = require('..');
-var body        = require('go-fetch-body-parser');
-var contentType = require('go-fetch-content-type');
+'use-strict';
 
-Client()
-	.use(contentType)
-	.use(body.json())
-	.post('http://httpbin.org/post', {'Content-Type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}), function(error, response) {
+const Client = require('..');
 
-		console.log(
-			'Error: '+(error ? error : 'no error')+'\n'+
-			'Status: '+response.getStatus()+'\n'+
-			'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n',
-			response.getBody()
-		);
-
-	})
+new Client()
+  .post('http://httpbin.org/post', {'content-type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}))
+  .then(res => {
+    console.log(res.toString());
+    return res.body.json().then(json => console.log(json));
+  })
+  .catch(err => console.error(err))
 ;

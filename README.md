@@ -6,7 +6,7 @@ A pluggable HTTP client.
 
 Go-fetch is a HTTP client for Node.js. It has a simple API but supports a lot of features via plugins.
 
-## Features
+**Features:**
 
 - Support for HTTP and HTTPS
 - Support for streaming
@@ -17,92 +17,49 @@ Go-fetch is a HTTP client for Node.js. It has a simple API but supports a lot of
     - authentication
     - ... and more
 
+## Installation
+
+    npm install --save go-fetch
+
 ## Usage
     
 ### GET
     
-Callback style:
-    
-    var Client  = require('go-fetch');
-    var body    = require('go-fetch-body-parser');
-    
-    Client()
-        .use(body())
-        .get('http://httpbin.org/html', function(error, response) {
-    
-            console.log(
-                'Error: '+(error ? error : 'no error')+'\n'+
-                'Status: '+response.getStatus()+'\n'+
-                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
-                (response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
-            );
-    
-        })
-    ;
-        
-OOP style:
-    
-    var Client = require('go-fetch');
-    var parseBody = require('go-fetch-parse-body');
-    
-    Client()
-        .use(parseBody())
-        .get('http://httpbin.org/html')
-            .setHeader('User-Agent', 'go-fetch')
-            .send(function(error, response) {
-        
-                console.log(
-                    'Error: '+(error ? error : 'no error')+'\n'+
-                    'Status: '+response.getStatus()+'\n'+
-                    'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n'+
-                    (response.getBody() ? response.getBody().substr(0, 100)+'...' : '')
-                );
-        
-            })
-    ;
-    
+```javascript
+
+const Client = require('go-fetch');
+const json = require('go-fetch-json');
+
+new Client()
+  .use(json())
+  .get('http://httpbin.org/get')
+    .then(res => {
+      console.log(res.toString());
+      return res.body.json().then(json => console.log(json));
+    })
+    .catch(err => console.error(err))
+;
+
+```
+
 ### POST
 
-Callback style:
-    
-    var Client      = require('go-fetch');
-    var body        = require('go-fetch-body-parser');
-    var contentType = require('go-fetch-content-type');
-    
-    Client()
-        .use(contentType)
-        .use(body.json())
-        .post('http://httpbin.org/post', {'Content-Type': 'application/json'}, JSON.stringify({msg: 'Go fetch!'}), function(error, response) {
-    
-            console.log(
-                'Error: '+(error ? error : 'no error')+'\n'+
-                'Status: '+response.getStatus()+'\n'+
-                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n',
-                response.getBody()
-            );
-    
-        })
-    ;
-    
-Post a stream:
-    
-    var fs          = require('fs');
-    var Client      = require('go-fetch');
-    var body        = require('go-fetch-body-parser');
-    
-    Client()
-        .use(body())
-        .post('http://httpbin.org/post', {'Content-Type': 'text/x-markdown'}, fs.createReadStream(__dirname+'/../README.md'), function(error, response) {
-    
-            console.log(
-                'Error: '+(error ? error : 'no error')+'\n'+
-                'Status: '+response.getStatus()+'\n'+
-                'Headers: '+JSON.stringify(response.getHeaders()).substr(0, 100)+'...'+'\n',
-                response.getBody()
-            );
-    
-        })
-    ;
+```javascript
+
+const Client = require('go-fetch');
+const json = require('go-fetch-json');
+
+new Client()
+  .use(json())
+  .post('http://httpbin.org/post', {msg: 'Go fetch!'})
+    .then(res => {
+      console.log(res.toString());
+      return res.body.json().then(json => console.log(json));
+    })
+    .catch(err => console.error(err))
+;
+
+```
 
 ## API
 
@@ -112,9 +69,11 @@ A HTTP client.
 
 #### Methods
 
-##### new Client(options) / Client(options)
+##### new Client(options)
 
 Create a new client
+
+**Options:**
 
 - https_protocol
 - https_ignore_errors
@@ -156,46 +115,6 @@ Add an event listener.
 ##### .off(event, callback) : Client
 
 Remove an event listener.
-
-#### Events
-
-##### before
-
-Emitted before the request is sent to the server with the following arguments:
-
-- event : Client.Event
-    - .getName() : string
-    - .getEmitter() : Client
-    - .isDefaultPrevented() : bool
-    - .preventDefault()
-    - .isPropagationStopped() : bool
-    - .stopPropagation()
-    - .request : Client.Request
-    - .response : Client.Response
-
-Useful for plugins setting data on the request e.g. OAuth signature
-    
-##### after
-
-Emitted after the request is sent to the server with the following arguments:
-
-
-- event : Client.Event
-    - .getName() : string
-    - .getEmitter() : Client
-    - .isPropagationStopped() : bool
-    - .stopPropagation()
-    - .request : Client.Request
-    - .response : Client.Response
-
-
-Useful for plugins processing and setting data on the response e.g. gzip/deflate
-
-##### error
-
-Emitted when an error occurs.
-
-- error : Error
 
 ### Request
 
