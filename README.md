@@ -2,20 +2,20 @@
 
 [![Circle CI](https://circleci.com/gh/go-fetch-js/go-fetch.svg?style=svg)](https://circleci.com/gh/go-fetch-js/go-fetch)
 
-A pluggable HTTP client.
+A pluggable HTTP client for Node.JS.
 
-Go-fetch is a HTTP client for Node.js. It has a simple API but supports a lot of features via plugins.
+`go-fetch` boasts a simple API but supports many features through plugins.
 
 **Features:**
 
-- Support for HTTP and HTTPS
+- Support for `HTTP` and `HTTPS` protocols
 - Support for streaming
 - Pluggable API with plugins for:
     - following redirects
     - compression
-    - parsing JSON
     - authentication
-    - ... and more
+    - working with JSON
+    - ...and lots more
 
 ## Installation
 
@@ -33,10 +33,8 @@ const json = require('go-fetch-json');
 new Client()
   .use(json())
   .get('http://httpbin.org/get')
-    .then(res => {
-      console.log(res.toString());
-      return res.body.json().then(json => console.log(json));
-    })
+    .then(res => res.json())
+    .then(json => console.log(res.toString(), json))
     .catch(err => console.error(err))
 ;
 
@@ -52,10 +50,8 @@ const json = require('go-fetch-json');
 new Client()
   .use(json())
   .post('http://httpbin.org/post', {msg: 'Go fetch!'})
-    .then(res => {
-      console.log(res.toString());
-      return res.body.json().then(json => console.log(json));
-    })
+    .then(res => res.json())
+    .then(json => console.log(res.toString(), json))
     .catch(err => console.error(err))
 ;
 
@@ -67,150 +63,250 @@ new Client()
 
 A HTTP client.
 
-#### Methods
 
-##### new Client(options)
+```
+new Client([options : object])
+```
 
-Create a new client
+Create a new `HTTP` client.
 
 **Options:**
 
-- https_protocol
-- https_ignore_errors
+```
+.use(plugin : function) : Client
+```
 
-##### .use(plugin) : Client
+Extend the functionality with a plugin.
 
-Apply a plugin on this client. 
+**Parameters:**
 
-Plugins are passed the client object. 
+- `plugin` Required. A plugin function.
 
-##### .get(url, headers) : Request
+**Returns:**
 
-##### .get(url, headers, callback) : Client
+The client.
 
-##### .post(url, headers, data) : Request
+```
+.before(middleware : function) : Client
+```
 
-##### .post(url, headers, data, callback) : Client
+Extend the functionality with a middleware function which is run before a request is sent.
 
-##### .put(url, headers, data) : Request
+**Parameters:**
 
-##### .put(url, headers, data, callback) : Client
+- `middleware` Required. A middleware function.
 
-##### .delete(url, headers, data) : Request
+**Returns:**
 
-##### .delete(url, headers, data, callback) : Client
+The client.
 
-##### .send(request) : Response
+```
+.after(middleware : function) : Client
+```
 
-Send a request.
+Extend the functionality with a middleware function which is run after a request is sent.
 
-##### .send(request, callback) : Client
+**Parameters:**
 
-Send a request and handle the response.
+- `middleware` Required. A middleware function.
 
-##### .on(event, callback) : Client
+**Returns:**
 
-Add an event listener.
+The client.
 
-##### .off(event, callback) : Client
+```
+.get(url : string, [headers : object]) : Promise
+```
 
-Remove an event listener.
+Send a `HTTP` `GET` request.
+
+**Parameters:**
+
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+
+**Returns:**
+
+A `Promise`. Resolves with a `Response`. Rejects with an `Error`.
+
+```
+.post(url : string, [headers : object], [body : *]) : Promise
+```
+
+Send a `HTTP` `POST` request.
+
+**Parameters:**
+
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+- `body` Optional. The request body. May be a string or a stream.
+
+**Returns:**
+
+A `Promise`. Resolves with a `Response`. Rejects with an `Error`.
+
+```
+.put(url : string, [headers : object], [body : *]) : Promise
+```
+
+Send a `HTTP` `PUT` request.
+
+**Parameters:**
+
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+- `body` Optional. The request body. May be a string or a stream.
+
+**Returns:**
+
+A `Promise`. Resolves with a `Response`. Rejects with an `Error`.
+
+```
+.delete(url : string, [headers : object]) : Promise
+```
+
+Send a `HTTP` `DELETE` request.
+
+**Parameters:**
+
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+
+**Returns:**
+
+A `Promise`. Resolves with a `Response`. Rejects with an `Error`.
+
+```
+.request(method : string, url : string, [headers : object], [body : *]) : Promise
+```
+
+Send a `HTTP` request.
+
+**Parameters:**
+
+- `method` Required. The request method.
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+- `body` Optional. The request body. May be a string or a stream.
+
+**Returns:**
+
+A `Promise`. Resolves with a `Response`. Rejects with an `Error`.
 
 ### Request
 
 A HTTP request.
 
-#### Methods
-
-##### new Request(method, url, headers, body)
+```
+new Request([options : object])
+```
 
 Create a new request.
 
-##### .setUrl(url) : String
+**Options:**
 
-Set the URL.
+- `method` Required. The request method.
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+- `body` Optional. The request body. May be a string or a stream.
 
-##### .setHeaders(headers : Object)
+```
+.method : string
+```
 
-Set all the headers.
+The request method.
 
-##### .setHeader(name : string, value : string)
+```
+.url : string
+```
 
-Set a header value.
+The request URL.
 
-##### .setBody(data : string|Buffer|Stream)
+```
+.headers : object
+```
 
-Set the body data.
+The request headers. An object containing key-value pairs.
 
-#### Events
+```
+.body : *
+```
 
-##### sent
-##### error
+The request body. May be a string or a stream.
 
 ### Response
 
 A HTTP response.
 
-#### Methods
+```
+new Response([options : object])
+```
 
-##### .getStatus() : number
+Create a new request.
 
-Get the status code.
+**Options:**
 
-##### .getHeaders() : Object
+- `status` Required. The request method.
+- `url` Required. The request URL.
+- `headers` Optional. The request headers. An object containing key-value pairs.
+- `body` Optional. The request body. May be a string or a stream.
 
-Get all the headers.
+```
+.status : number
+```
 
-##### .getHeader(name : string) : string
+The response stats.
 
-Get a header value.
+```
+.reason : string
+```
 
-##### .getBody() : string|Buffer|Stream
+The response reason.
 
-Get the body data.
+```
+.headers : object
+```
 
-##### .abort() : Response
+The response headers. An object containing key-value pairs.
 
-Abort the response.
+```
+.body : *
+```
 
-#### Events
+The response body. May be a string or a stream. Usually a stream.
 
-##### received
-##### error
+```
+.text(encoding : string) : Promise
+```
 
-## Plugins
+Read the response body into a string.
 
-Plugins are functions that are passed the client object to do something with it. Plugins are executed when they are `.use()`d. Using the `before` and `after` events, plugins are able to add helper methods to the `Request` and `Response` objects, modify the request data sent to the server, process the response data received from the server, or cancel the request and use a locally constructed response instead.
+**Returns:**
+
+A `Promise`. Resolves with a `string`. Rejects with an `Error`.
+
+
+## Plugins and Middleware
+
+Plugin functions are simple functions that take a client instance and do something with it. Plugin functions are called when they are `.use()`d.
+
+Middleware functions are simple functions that take a `Request` or `Response` object and a `next()` callback as parameters, and does something with them. e.g. add helper methods to the `Request` or `Response` objects, modify the headers or body sent or retreived from the server.
 
 ### Example
 
-Here's an example plugin that adds an `.isError()` method to the `Response` object.
+Here's an example plugin that adds a `.error()` method to the `Response` for asserting whether an error occurred with the request.
 
-    function plugin(client) {
-		client.on('after', function (event) {
-                        
-			event.response.isError = function() {
-			    return this.getStatus() >= 400 && this.getStatus() < 600;
-			};
-			
-		});
-	}
-	
-Here's an example plugin that returns a mocked request instead of a real one.
+```javascript
+function plugin(client) {
+  client.after((res, next) => {
+    res.error = () =>
+      this.status >= 400 && this.status < 600
+    ;
+    next(null, res);
+  });
+}
+````
 
-    function(client) {
-        client.on('before', function(event) {
-            event.preventDefault();
-            event.response
-                .setStatus(201)
-                .setHeader('Content-Type', 'application/json; charset=utf-8')
-                .setBody(JSON.stringify({
-                    message: 'Hello World!'
-                }))
-            ;
-        });
-    }
-	
 ### [prefix-url](https://www.npmjs.com/package/go-fetch-prefix-url)
 
 Prefix each request URL with another URL.
@@ -243,15 +339,22 @@ Decompress response bodies compressed with gzip.
 
 Add a User-Agent header to every request.
 
-## ToDo
+## To do
 
 - Tests
 - Plugins:
     - Cookie Jar
-    - OAuth v2
-- Support for XMLHttpRequest in the browser
+- Support for XMLHttpRequest/fetch in the browser
 
 ## Changelog
+
+### v3.0.0
+
+Almost a total rewrite.
+
+- break: use promises instead of events and callbacks
+- break: use middleware instead of events for plugins
+- break: use simplified `Request` and `Response` objects
 
 ### v2.0.0
 
@@ -264,10 +367,4 @@ Add a User-Agent header to every request.
 
 The MIT License (MIT)
 
-Copyright (c) 2014 James Newell
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Copyright (c) 2016 James Newell

@@ -19,113 +19,184 @@ describe('Client', function() {
 
   describe('.request()', () => {
 
-    it('should call .before() middleware with a Request', (done) => {
-      let called = false;
+    describe(' => middleware', () => {
 
-      server.create(app => {
-          app.get('/', (req, res) => {
-            res.send('go-fetch');
-          });
-        })
-        .then(server =>
+      describe('.before()', () => {
 
-          new Client()
-            .before(req => {
-              called = true;
-              expect(req).to.be.an.instanceof(Request);
+        it('should be called with a Request', (done) => {
+          let called = false;
+
+          server.create(app => {
+              app.get('/', (req, res) => {
+                res.send('go-fetch');
+              });
             })
-            .get(server.url)
-            .then(res => expect(called).to.be.true)
-            .then(
-              () => server.close(done),
-              err => server.close(() => done(err))
+            .then(server =>
+
+              new Client()
+                .before(req => {
+                  called = true;
+                  expect(req).to.be.an.instanceof(Request);
+                })
+                .get(server.url)
+                  .then(res => expect(called).to.be.true)
+                  .then(
+                    () => server.close(done),
+                    err => server.close(() => done(err))
+                  )
+
             )
+          ;
 
-        )
-      ;
+        });
 
-    });
+        it('should be able to modify the Request', (done) => {
 
-    it('should modify the Request when the .before() middleware is called', (done) => {
-
-      server.create(app => {
-          app.get('/', (req, res) => {
-            res.header('x-test', req.headers['x-test']);
-            res.send('go-fetch');
-          });
-        })
-        .then(server =>
-
-          new Client()
-            .before((req, next) => {
-              req.headers['x-test'] = 'foo';
-              next(null, req);
+          server.create(app => {
+              app.get('/', (req, res) => {
+                res.header('x-test', req.headers['x-test']);
+                res.send('go-fetch');
+              });
             })
-            .get(server.url)
-              .then(res => expect(res.headers).to.have.property('x-test').equal('foo'))
-              .then(
-                () => server.close(done),
-                err => server.close(() => done(err))
-              )
+            .then(server =>
 
-        )
-      ;
+              new Client()
+                .before((req, next) => {
+                  req.headers['x-test'] = 'foo';
+                  next(null, req);
+                })
+                .get(server.url)
+                  .then(res => expect(res.headers).to.have.property('x-test').equal('foo'))
+                  .then(
+                    () => server.close(done),
+                    err => server.close(() => done(err))
+                  )
 
-    });
-
-    it('should call .after() middleware with a Response', (done) => {
-      let called = false;
-
-      server.create(app => {
-          app.get('/', (req, res) => {
-            res.send('go-fetch');
-          });
-        })
-        .then(server =>
-
-          new Client()
-            .after(req => {
-              called = true;
-              expect(req).to.be.an.instanceof(Response);
-            })
-            .get(server.url)
-              .then(res => expect(called).to.be.true)
-              .then(
-                () => server.close(done),
-                err => server.close(() => done(err))
-              )
-
-        )
-      ;
-
-    });
-
-    it('should modify the Response when the .after() after is called', (done) => {
-
-      server.create(app => {
-          app.get('/', (req, res) => {
-            res.send('go-fetch');
-          });
-        })
-        .then(server =>
-
-          new Client()
-            .after((res, next) => {
-              res.headers['x-test'] = 'foo';
-            })
-            .get(server.url)
-            .then(res => expect(res.headers).to.have.property('x-test').equal('foo'))
-            .then(
-              () => server.close(done),
-              err => server.close(() => done(err))
             )
+          ;
 
-        )
-      ;
+        });
+
+      });
+
+      describe('.after()', () => {
+
+        it('should be called with a Response', (done) => {
+          let called = false;
+
+          server.create(app => {
+              app.get('/', (req, res) => {
+                res.send('go-fetch');
+              });
+            })
+            .then(server =>
+
+              new Client()
+                .after(req => {
+                  called = true;
+                  expect(req).to.be.an.instanceof(Response);
+                })
+                .get(server.url)
+                  .then(res => expect(called).to.be.true)
+                  .then(
+                    () => server.close(done),
+                    err => server.close(() => done(err))
+                  )
+
+            )
+          ;
+
+        });
+
+        it('should be able to modify the Response', (done) => {
+
+          server.create(app => {
+              app.get('/', (req, res) => {
+                res.send('go-fetch');
+              });
+            })
+            .then(server =>
+
+              new Client()
+                .after((res) => {
+                  res.headers['x-test'] = 'foo';
+                })
+                .get(server.url)
+                  .then(res => expect(res.headers).to.have.property('x-test').equal('foo'))
+                  .then(
+                    () => server.close(done),
+                    err => server.close(() => done(err))
+                  )
+
+            )
+          ;
+
+        });
+
+      });
 
     });
 
   });
+
+  describe('.get()', () => {
+    it('should set the method, URL and headers');
+
+    describe('=> network', () => {
+
+      it('should receive a response', () => {
+        return new Client()
+          .get('http://httpbin.org/get', {'x-test': 'foobar'})
+          .then(res => {
+            expect(res.version).to.be.equal('1.1');
+            expect(res.status).to.be.equal(200);
+            expect(res.reason).to.be.equal('OK');
+            expect(res.headers).to.have.property('content-type').equal('application/json');
+            return res.body.data().then(data => expect(JSON.parse(data)).to.have.property('headers.x-test'));
+          });
+      });
+    });
+
+  });
+
+  describe('.post()', () => {
+    it('should set the method, URL, headers and body');
+
+    describe('=> network', () => {
+
+      it('should receive a response', () => {
+        return new Client()
+          .post('http://httpbin.org/post')
+          .then(res => {
+            expect(res.version).to.be.equal('1.1');
+            expect(res.status).to.be.equal(200);
+            expect(res.reason).to.be.equal('OK');
+            expect(res.headers).to.have.property('content-type').equal('application/json');
+            return res.body.data().then(data => expect(JSON.parse(data)).to.deep.equal({
+              'args': {},
+              'headers': {
+                'Host': 'httpbin.org'
+              },
+              'origin': '115.70.69.240', //todo: this will break
+              'url': 'http://httpbin.org/get'
+            }));
+          })
+          ;
+
+      });
+
+    });
+
+  });
+
+  describe('.put()', () => {
+    it('should set the method, URL, headers and body');
+  });
+
+  describe('.delete()', () => {
+    it('should set the method, URL and headers');
+  });
+
 
   //
 	//describe('constructor', function() {

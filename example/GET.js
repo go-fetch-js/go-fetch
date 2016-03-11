@@ -1,12 +1,12 @@
-'use-strict';
+'use strict';
 
 const Client = require('..');
+const json = require('go-fetch-json');
 
 new Client()
+  .use(json())
   .get('http://httpbin.org/get')
-    .then(res => {
-      console.log(res.toString());
-      return res.body.json().then(json => console.log(json));
-    })
+    .then(res => res.json())
+    .then(json => console.log(res.toString(), json))
     .catch(err => console.error(err))
 ;
