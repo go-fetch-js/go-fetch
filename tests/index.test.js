@@ -152,7 +152,7 @@ describe('Client', function() {
             expect(res.status).to.be.equal(200);
             expect(res.reason).to.be.equal('OK');
             expect(res.headers).to.have.property('content-type').equal('application/json');
-            return res.body.data().then(data => expect(JSON.parse(data)).to.have.property('headers.x-test'));
+            return res.text().then(text => expect(JSON.parse(text)).to.have.property('headers').to.have.property('X-Test', 'foobar'));
           });
       });
     });
@@ -166,20 +166,13 @@ describe('Client', function() {
 
       it('should receive a response', () => {
         return new Client()
-          .post('http://httpbin.org/post')
+          .post('http://httpbin.org/post', JSON.stringify({msg: 'Hello World!'}))
           .then(res => {
             expect(res.version).to.be.equal('1.1');
             expect(res.status).to.be.equal(200);
             expect(res.reason).to.be.equal('OK');
             expect(res.headers).to.have.property('content-type').equal('application/json');
-            return res.body.data().then(data => expect(JSON.parse(data)).to.deep.equal({
-              'args': {},
-              'headers': {
-                'Host': 'httpbin.org'
-              },
-              'origin': '115.70.69.240', //todo: this will break
-              'url': 'http://httpbin.org/get'
-            }));
+            return res.text().then(text => expect(JSON.parse(text)).to.have.property('json').to.have.property('msg', 'Hello World!'));
           })
           ;
 
