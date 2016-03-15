@@ -1,6 +1,6 @@
 # go-fetch
 
-[![Circle CI](https://circleci.com/gh/go-fetch-js/go-fetch.svg?style=svg)](https://circleci.com/gh/go-fetch-js/go-fetch)
+[![Build Status](https://travis-ci.org/go-fetch-js/json.svg?branch=master)](https://travis-ci.org/go-fetch-js/json)
 
 A pluggable HTTP client for Node.JS.
 
@@ -33,9 +33,12 @@ const json = require('go-fetch-json');
 new Client()
   .use(json())
   .get('http://httpbin.org/get')
-    .then(res => res.json())
-    .then(json => console.log(res.toString(), json))
-    .catch(err => console.error(err))
+    .then(res => {
+      console.log(res.toString());
+      return res.json();
+    })
+    .then(json => console.log(json))
+    .catch(err => console.error(err.stack))
 ;
 
 ```
@@ -50,9 +53,12 @@ const json = require('go-fetch-json');
 new Client()
   .use(json())
   .post('http://httpbin.org/post', {msg: 'Go fetch!'})
-    .then(res => res.json())
-    .then(json => console.log(res.toString(), json))
-    .catch(err => console.error(err))
+    .then(res => {
+      console.log(res.toString());
+      return res.json();
+    })
+    .then(json => console.log(json))
+    .catch(err => console.error(err.stack))
 ;
 
 ```

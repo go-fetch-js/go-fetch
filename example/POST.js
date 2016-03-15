@@ -6,8 +6,11 @@ const json = require('go-fetch-json');
 new Client()
   .use(json())
   .post('http://httpbin.org/post', {msg: 'Go fetch!'})
-    .then(res => res.json())
-    .then(json => console.log(res.toString(), json))
-    .catch(err => console.error(err))
+  .then(res => {
+    console.log(res.toString(), res.isJSON());
+    return res.json();
+  })
+  .then(json => console.log(json))
+  .catch(err => console.error(err.stack))
 ;
 
