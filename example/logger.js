@@ -11,6 +11,7 @@ client
   })
 
   .after(parseBody)
+
 	.after((res, next) => {
     console.log('\n======================\nafter:\n\n' + res.toString());
     next(null, res);

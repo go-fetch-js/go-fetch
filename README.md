@@ -345,14 +345,11 @@ Decompress response bodies compressed with gzip.
 
 Add a User-Agent header to every request.
 
-## To do
-
-- Tests
-- Plugins:
-    - Cookie Jar
-- Support for XMLHttpRequest/fetch in the browser
-
 ## Changelog
+
+### v3.1.0
+
+- add: middleware can short-circuit the request to return a staged response
 
 ### v3.0.0
 
@@ -368,6 +365,13 @@ Almost a total rewrite.
  - changed the arguments passed to the `before` and `after` event handlers - handlers now receive a formal event object that allows propagation to be stopped and the request to be prevented
  - adding some tests
  - cleaning up documentation
+
+## To do
+
+- Moar tests
+- Plugins:
+    - Cookie Jar
+- Support for XMLHttpRequest/fetch in the browser
 
 ## License
 
