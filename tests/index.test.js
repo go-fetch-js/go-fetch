@@ -34,9 +34,10 @@ describe('Client', function() {
             .then(server =>
 
               new Client()
-                .before(req => {
+                .before((req, next) => {
                   called = true;
                   expect(req).to.be.an.instanceof(Request);
+                  next(null, req);
                 })
                 .get(server.url)
                   .then(res => expect(called).to.be.true)
@@ -92,9 +93,10 @@ describe('Client', function() {
             .then(server =>
 
               new Client()
-                .after(req => {
+                .after((req, next) => {
                   called = true;
                   expect(req).to.be.an.instanceof(Response);
+                  next(null, req);
                 })
                 .get(server.url)
                   .then(res => expect(called).to.be.true)
@@ -118,8 +120,9 @@ describe('Client', function() {
             .then(server =>
 
               new Client()
-                .after((res) => {
+                .after((res, next) => {
                   res.headers['x-test'] = 'foo';
+                  next(null, res);
                 })
                 .get(server.url)
                   .then(res => expect(res.headers).to.have.property('x-test').equal('foo'))
