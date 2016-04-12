@@ -347,10 +347,11 @@ Add a User-Agent header to every request.
 
 ## Changelog
 
-### v3.1.0
+### v3.1.0-
 
 - add: middleware can short-circuit the request to return a staged response
 - break: middleware can no longer be synchronous, they must call `next()` - don't think anyone else will be using sync (its a bit ambiguous) but the tests were
+- fix: warn when an inconsistent number of middleware args is returned
 
 ### v3.0.0
 
