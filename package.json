@@ -1,6 +1,6 @@
 {
   "name": "go-fetch",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A pluggable HTTP client.",
   "keywords": [
     "http",
@@ -34,7 +34,8 @@
   "scripts": {
     "test:unit": "mocha --require ./tests/setup.js ./lib/**/*.test.js",
     "test:integration": "mocha --require ./tests/setup.js ./tests/**/*.test.js",
-    "test": "npm run test:unit && npm run test:integration"
+    "test": "npm run test:unit && npm run test:integration",
+    "prepublish": "npm run test"
   },
   "license": "MIT"
 }
